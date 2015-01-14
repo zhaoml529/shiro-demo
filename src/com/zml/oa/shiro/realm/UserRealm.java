@@ -1,5 +1,6 @@
 package com.zml.oa.shiro.realm;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,7 @@ public class UserRealm extends AuthorizingRealm{
 	        
 	        List<GroupAndResource> grList = this.grService.getResource(user.getGroup().getId());
 	        Set<String> resources = new HashSet<String>();
+	        List<Resource> menus = new ArrayList<Resource>();
 	        for(GroupAndResource gr : grList){
 	        	Resource resource = this.resourceService.getPermissions(gr.getResourceId());
 	        	resources.add(resource.getPermission());
@@ -107,7 +109,7 @@ public class UserRealm extends AuthorizingRealm{
         }
 
         //Authenticator的职责是验证用户帐号，是Shiro API中身份验证核心的入口点
-        //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
+        //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 user.getName(), //用户名
                 user.getPasswd(), //密码

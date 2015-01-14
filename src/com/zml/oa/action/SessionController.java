@@ -15,9 +15,9 @@ import com.zml.oa.util.Constants;
 import java.util.Collection;
 
 /**
- * <p>User: Zhang Kaitao
- * <p>Date: 14-3-16
- * <p>Version: 1.0
+ * 在线会话管理
+ * @author zml
+ *
  */
 
 @RequiresPermissions("session:*")
