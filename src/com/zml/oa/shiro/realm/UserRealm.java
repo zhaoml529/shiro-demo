@@ -1,0 +1,149 @@
+package com.zml.oa.shiro.realm;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import com.zml.oa.entity.GroupAndResource;
+import com.zml.oa.entity.Resource;
+import com.zml.oa.entity.User;
+import com.zml.oa.service.IGroupAndResourceService;
+import com.zml.oa.service.IResourceService;
+import com.zml.oa.service.IUserService;
+
+/**
+ * Shiro从从Realm获取安全数据 （如用户、 角色、 权限）
+ * 可以把UserRealm看为安全数据源
+ * @author ZML
+ *
+ */
+
+public class UserRealm extends AuthorizingRealm{
+	private static final Logger logger = Logger.getLogger(UserRealm.class);
+
+	@Autowired
+	private IUserService userService;
+
+    @Autowired
+    private IGroupAndResourceService grService;
+    
+    @Autowired
+    private IResourceService resourceService;
+
+    /**
+     * 授权
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        String username = (String)principals.getPrimaryPrincipal();
+        //Authorization 授权，即权限验证，验证某个已认证的用户是否拥有某个权限
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+		try {
+			User user = this.userService.getUserByName(username);
+	        Set<String> roles = new HashSet<String>();
+	        //本系统设计为一个用户属于一个用户组，即用户组就是用户的角色（employee、finance、hr、boss..）；每个用户组有不同的权限（资源）
+	        //其他系统中可以设置 一个用户有多个角色，一个角色有多个权限
+	        roles.add(user.getGroup().getId().toString());
+	        
+	        List<GroupAndResource> grList = this.grService.getResource(user.getGroup().getId());
+	        Set<String> resources = new HashSet<String>();
+	        for(GroupAndResource gr : grList){
+	        	Resource resource = this.resourceService.getPermissions(gr.getResourceId());
+	        	resources.add(resource.getPermission());
+	        }
+	        
+	        authorizationInfo.setRoles(roles);
+	        authorizationInfo.setStringPermissions(resources);
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("realm 错误！");
+		}
+		return authorizationInfo;
+    }
+
+    /**
+     * 认证
+     */
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+
+        String username = (String)token.getPrincipal();
+
+        User user = null;
+		try {
+			user = this.userService.getUserByName(username);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        if(user == null) {
+            throw new UnknownAccountException();//没找到帐号
+        }
+
+        if(Boolean.TRUE.equals(user.getLocked())) {
+            throw new LockedAccountException(); //帐号锁定
+        }
+
+        //Authenticator的职责是验证用户帐号，是Shiro API中身份验证核心的入口点
+        //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+                user.getName(), //用户名
+                user.getPasswd(), //密码
+                ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
+                getName()  //realm name
+        );
+        return authenticationInfo;
+    	
+    }
+
+    @Override
+    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+        super.clearCachedAuthorizationInfo(principals);
+    }
+
+    @Override
+    public void clearCachedAuthenticationInfo(PrincipalCollection principals) {
+        super.clearCachedAuthenticationInfo(principals);
+    }
+
+    @Override
+    public void clearCache(PrincipalCollection principals) {
+        super.clearCache(principals);
+    }
+
+    public void clearAllCachedAuthorizationInfo() {
+        getAuthorizationCache().clear();
+    }
+
+    public void clearAllCachedAuthenticationInfo() {
+        getAuthenticationCache().clear();
+    }
+
+    public void clearAllCache() {
+        clearAllCachedAuthenticationInfo();
+        clearAllCachedAuthorizationInfo();
+    }
+
+}
