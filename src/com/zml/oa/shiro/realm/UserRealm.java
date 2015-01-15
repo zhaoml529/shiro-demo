@@ -63,7 +63,7 @@ public class UserRealm extends AuthorizingRealm{
 	        Set<String> roles = new HashSet<String>();
 	        //本系统设计为一个用户属于一个用户组，即用户组就是用户的角色（employee、finance、hr、boss..）；每个用户组有不同的权限（资源）
 	        //其他系统中可以设置 一个用户有多个角色，一个角色有多个权限
-	        roles.add(user.getGroup().getId().toString());
+	        roles.add(user.getGroup().getType());
 	        
 	        List<GroupAndResource> grList = this.grService.getResource(user.getGroup().getId());
 	        Set<String> resources = new HashSet<String>();
