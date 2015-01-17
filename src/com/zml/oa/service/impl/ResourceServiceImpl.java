@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.zml.oa.entity.GroupAndResource;
 import com.zml.oa.entity.Resource;
@@ -17,7 +15,8 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements
 
 	@Override
 	public Resource getPermissions(Integer id) throws Exception {
-		return getBean(Resource.class, id);
+		Resource res = getUnique("Resource", new String[]{"id", "available"}, new String[]{id.toString(), "1"});
+		return res;
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource> implements
 			if(resource.isRootNode()) {
                 continue;
             }
-            if(resource.getType() != Resource.ResourceType.menu) {
+            if(!"menu".equals(resource.getType())) {
                 continue;
             }
             menus.add(resource);

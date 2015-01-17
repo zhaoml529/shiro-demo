@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,11 +49,12 @@ public class MainController {
     }
     
     @RequestMapping(value = "/nav")
-    public String nav(@CurrentUser User loginUser, Model model) throws Exception {
-    	User user = this.userService.getUserByName(loginUser.getName());
+    public String nav(HttpSession session, Model model) throws Exception {
+    	String username = (String) SecurityUtils.getSubject().getPrincipal();
+    	User user = this.userService.getUserByName(username);
         List<GroupAndResource> grList = this.grService.getResource(user.getGroup().getId());
         List<Resource> menus = this.resourceService.getMenus(grList);
-        model.addAttribute("menus", menus);
+        model.addAttribute("menuList", menus);
     	return "main/nav";
     }
 

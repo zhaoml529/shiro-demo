@@ -32,7 +32,7 @@ public class Resource implements Serializable {
     private String name; 							//资源名称
 	
 	@Column(name = "type")
-    private ResourceType type = ResourceType.menu; 	//资源类型
+    private String type;						//资源类型
 	
 	@Column(name = "url")
     private String url; 							//资源路径
@@ -40,28 +40,15 @@ public class Resource implements Serializable {
 	@Column(name = "permission")
     private String permission; 						//权限字符串
 	
-	@Column(name = "parentId")
+	@Column(name = "parent_id")
     private Long parentId; 							//父编号
 	
-	@Column(name = "parentIds")
+	@Column(name = "parent_ids")
     private String parentIds; 						//父编号列表
 	
 	@Column(name = "available")
     private Integer available;
     
-    public static enum ResourceType {
-        menu("菜单"), button("按钮");
-
-        private final String info;
-        private ResourceType(String info) {
-            this.info = info;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-    }
-
 	public Integer getId() {
 		return id;
 	}
@@ -78,11 +65,11 @@ public class Resource implements Serializable {
 		this.name = name;
 	}
 
-	public ResourceType getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(ResourceType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

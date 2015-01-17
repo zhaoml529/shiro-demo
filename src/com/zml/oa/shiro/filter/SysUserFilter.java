@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zml.oa.entity.User;
 import com.zml.oa.service.IUserService;
+import com.zml.oa.util.Constants;
 
 public class SysUserFilter extends PathMatchingFilter {
     
@@ -25,7 +26,7 @@ public class SysUserFilter extends PathMatchingFilter {
 
         String username = (String) SecurityUtils.getSubject().getPrincipal();
         User user = this.userService.getUserByName(username);
-        request.setAttribute("user", user);
+        request.setAttribute(Constants.CURRENT_USER, user);
         return true;
     }
 }

@@ -17,12 +17,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.zml.oa.entity.GroupAndResource;
 import com.zml.oa.entity.Resource;
@@ -63,11 +58,11 @@ public class UserRealm extends AuthorizingRealm{
 	        Set<String> roles = new HashSet<String>();
 	        //本系统设计为一个用户属于一个用户组，即用户组就是用户的角色（employee、finance、hr、boss..）；每个用户组有不同的权限（资源）
 	        //其他系统中可以设置 一个用户有多个角色，一个角色有多个权限
-	        roles.add(user.getGroup().getType());
+	        //在本系统中 除了管理员是admin其他组都用user标识，除了老板，其他用户组的操作都和员工组一样的。
+	        roles.add("admin".equals(user.getGroup().getType())?"admin":"user");
 	        
 	        List<GroupAndResource> grList = this.grService.getResource(user.getGroup().getId());
 	        Set<String> resources = new HashSet<String>();
-	        List<Resource> menus = new ArrayList<Resource>();
 	        for(GroupAndResource gr : grList){
 	        	Resource resource = this.resourceService.getPermissions(gr.getResourceId());
 	        	resources.add(resource.getPermission());
@@ -89,7 +84,7 @@ public class UserRealm extends AuthorizingRealm{
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-
+    	
         String username = (String)token.getPrincipal();
 
         User user = null;

@@ -121,7 +121,6 @@
         <property name="kickoutUrl" value="/loginAction/login?kickout=1"/>	<!-- 被踢出后重定向到的地址 -->
     </bean>
 
-    <bean id="sysUserFilter" class="com.zml.oa.shiro.filter.SysUserFilter"/>
     <bean id="forceLogoutFilter" class="com.zml.oa.shiro.filter.ForceLogoutFilter"/>
 
     <!-- Shiro的Web过滤器 -->
@@ -142,7 +141,6 @@
         <property name="filters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
-                <entry key="sysUser" value-ref="sysUserFilter"/>
                 <entry key="kickout" value-ref="kickoutSessionControlFilter"/>
                 <entry key="jCaptchaValidate" value-ref="jCaptchaValidateFilter"/>
                 <entry key="forceLogout" value-ref="forceLogoutFilter"/>
@@ -159,7 +157,7 @@
                 /images/**=anon 
              	/js/**=anon
             	/css/**=anon
-                /** = user,sysUser,forceLogout,kickout
+                /** = user,forceLogout,kickout
             </value>
         </property>
     </bean>
