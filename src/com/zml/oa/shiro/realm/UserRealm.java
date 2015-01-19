@@ -25,6 +25,7 @@ import com.zml.oa.entity.User;
 import com.zml.oa.service.IGroupAndResourceService;
 import com.zml.oa.service.IResourceService;
 import com.zml.oa.service.IUserService;
+import com.zml.oa.util.BeanUtils;
 
 /**
  * Shiro从从Realm获取安全数据 （如用户、 角色、 权限）
@@ -65,7 +66,9 @@ public class UserRealm extends AuthorizingRealm{
 	        Set<String> resources = new HashSet<String>();
 	        for(GroupAndResource gr : grList){
 	        	Resource resource = this.resourceService.getPermissions(gr.getResourceId());
-	        	resources.add(resource.getPermission());
+	        	if(!BeanUtils.isBlank(resource)){
+	        		resources.add(resource.getPermission());
+	        	}
 	        }
 	        
 	        authorizationInfo.setRoles(roles);

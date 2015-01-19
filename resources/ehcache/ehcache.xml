@@ -4,10 +4,12 @@
     <diskStore path="java.io.tmpdir"/>
 
     <!-- 登录记录缓存 锁定10分钟 -->
+    <!-- timeToIdleSeconds="3600" // 导致元素过期的访问间隔(秒为单位). 0表示可以永远空闲,默认为0
+  	timeToLiveSeconds="0" // 元素在缓存里存在的时间(秒为单位). 0 表示永远存在不过期 -->
     <cache name="passwordRetryCache"
            maxEntriesLocalHeap="2000"
            eternal="false"
-           timeToIdleSeconds="3600"
+           timeToIdleSeconds="60"	
            timeToLiveSeconds="0"
            overflowToDisk="false"
            statistics="true">

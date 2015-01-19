@@ -1,8 +1,6 @@
 package com.zml.oa.action;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,7 +16,6 @@ import com.zml.oa.entity.User;
 import com.zml.oa.service.IGroupAndResourceService;
 import com.zml.oa.service.IResourceService;
 import com.zml.oa.service.IUserService;
-import com.zml.oa.util.CurrentUser;
 
 
 /**
