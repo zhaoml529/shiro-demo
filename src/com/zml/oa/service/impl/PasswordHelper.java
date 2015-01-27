@@ -22,7 +22,7 @@ public class PasswordHelper {
     @Value("${password.algorithmName}")
     private String algorithmName = "md5";	//指定散列算法为MD5,还有别的算法如：SHA256、SHA1、SHA512
     @Value("${password.hashIterations}")
-    private int hashIterations = 2;			//散列迭代次数 md5(md5(pwd)): new Md5Hash(pwd, salt, 2).toString()
+    private int hashIterations = 2;		//散列迭代次数 md5(md5(pwd)): new Md5Hash(pwd, salt, 2).toString()
 
     public void setRandomNumberGenerator(RandomNumberGenerator randomNumberGenerator) {
         this.randomNumberGenerator = randomNumberGenerator;

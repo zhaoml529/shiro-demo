@@ -36,10 +36,6 @@
                           <td class="left"><input name="passwd" type="text" class="input_text2" size="30" /></td>
                         </tr>
                         <tr>
-                          <td width="15%" class="title1">盐(用于加密)：</td>
-                          <td class="left"><input name="salt" type="text" class="input_text2" size="30" /></td>
-                        </tr>
-                        <tr>
                           <td width="15%" class="title1">用户组：</td>
                           <td class="left">
 							<select name="group.id">
