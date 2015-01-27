@@ -118,6 +118,7 @@ public class UserRealm extends AuthorizingRealm{
     	
     }
 
+    //系统登出后 会自动清理授权和认证缓存
     @Override
     public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
         super.clearCachedAuthorizationInfo(principals);

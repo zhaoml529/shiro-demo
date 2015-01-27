@@ -22,9 +22,6 @@
 	<div id="main">
 
         
-      <div class="">
-          <input type="button" value="添加" class="input_button3" onClick="add()"/>
-      </div>
         
       <div class="sort_switch">
           <ul id="TabsNav">

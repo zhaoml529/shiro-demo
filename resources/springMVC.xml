@@ -55,20 +55,16 @@
      <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
          <property name="exceptionMappings">  
              <props>  
-                 <prop key="java.lang.Exception">ErrorPage/Exception</prop>  
-                 <prop key="java.lang.Throwable">ErrorPage/Exception</prop>  
+                 <prop key="java.lang.Exception">error/500</prop>  
+                 <prop key="java.lang.RuntimeException">error/500</prop>  
+                 <prop key="java.lang.Throwable">error/500</prop>  
+                 <prop key="UnauthorizedException">error/noRealm</prop>  
              </props>  
-         </property>  
-         <property name="statusCodes">  
-             <props>  
-                 <prop key="ErrorPage/Exception">500</prop>  
-                 <prop key="ErrorPage/Exception">404</prop>  
-             </props>  
-         </property>  
+         </property>    
          <!-- 设置日志输出级别，不定义则默认不输出警告等错误日志信息 -->  
          <property name="warnLogCategory" value="WARN"></property>  
          <!-- 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 -->  
-         <property name="defaultErrorView" value="errors/error"></property>  
+         <property name="defaultErrorView" value="error/500"></property>  
          <!-- 默认HTTP状态码 -->  
          <property name="defaultStatusCode" value="500"></property>  
      </bean>  
@@ -107,10 +103,10 @@
 	</bean>
 	
     <!-- 控制器异常处理 -->
-    <bean id="exceptionHandlerExceptionResolver" class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
+<!--     <bean id="exceptionHandlerExceptionResolver" class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
     </bean>
     
-	<bean class="com.zml.oa.exception.DefaultExceptionHandler"/>
+	<bean class="com.zml.oa.exception.DefaultExceptionHandler"/> -->
 	
 	<!-- 添加 Shiro Spring AOP 权限注解的支持 -->
     <aop:config proxy-target-class="true"></aop:config>
