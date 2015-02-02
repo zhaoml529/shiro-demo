@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.zml.oa.entity.User;
@@ -41,6 +43,9 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 		}
 	}
 
+	//将查询到的数据缓存到oaCache中,并使用userList作为缓存的key  
+	//通常更新操作只需刷新缓存中的某个值,所以为了准确的清除特定的缓存,故定义了这个唯一的key,从而不会影响其它缓存值  
+	@Cacheable(value="oaCache", key="'userList'")
 	@Override
 	public List<User> getUserList_page() throws Exception{
 		List<User> list = findByPage("User", new String[]{}, new String[]{});
@@ -52,7 +57,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 		return getUnique("User", new String[]{"id"}, new String[]{id.toString()});
 	}
 
+	//beforeInvocation = true 在方法执行前清空缓存，如果不加这个属性。很有可能在执行doAdd的时候出现异常，导致
+	//缓存不能清空，所以在方法执行前清空缓存，就不会出现不能清空缓存这种情况了。
 	@Override
+	@CacheEvict(value = "oaCache", allEntries = true, beforeInvocation = true)
 	public Serializable doAdd(User user) throws Exception {
         //加密密码
         passwordHelper.encryptPassword(user);
@@ -60,6 +68,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 	}
 
 	@Override
+	@CacheEvict(value="oaCache", key="'userList'")  
 	public void doUpdate(User user) throws Exception {
 		//pwd 为修改后的
 		passwordHelper.encryptPassword(user);
