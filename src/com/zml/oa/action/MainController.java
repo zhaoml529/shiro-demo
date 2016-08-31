@@ -55,7 +55,7 @@ public class MainController {
     	return "main/nav";
     }
 
-    @RequestMapping("/")
+    @RequestMapping("/index")
     public String index(Model model) throws Exception {
         return "index";
     }

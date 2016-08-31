@@ -100,7 +100,7 @@
         <property name="usernameParam" value="name"/>   <!-- 指定登录表单提交的用户名参数名 -->
         <property name="passwordParam" value="passwd"/>   <!-- 指定登录表单提交的密码参数名 -->
         <property name="rememberMeParam" value="rememberMe"/>
-        <!-- <property name="successUrl" value="/"/> 指定登录成功后重定向的默认地址（默认是“/”）（如果有上一个地址会自动重定向带该地址）-->
+        <property name="successUrl" value="/"/> <!-- 指定登录成功后重定向的默认地址（默认是“/”）（如果有上一个地址会自动重定向带该地址）-->
         <!-- <property name="failureKeyAttribute" value="shiroLoginFailure" />  failureKeyAttribute指定登录失败时的 request属性 key（默认 shiroLoginFailure） -->
         <property name="loginUrl" value="/loginAction/login"/>			<!-- 指定身份验证的登录表单 -->
     </bean>
@@ -148,10 +148,8 @@
         <property name="filterChainDefinitions">
             <value>
                 /loginAction/login = jCaptchaValidate,authc
-                /taglibs.jsp = anon
                 /logout = logout
-                /userAction/toAdd = anon
-                /userAction/doAdd = anon
+                /taglibs.jsp = anon
                 /jcaptcha* = anon
                 /images/**=anon 
              	/js/**=anon
